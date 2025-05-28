@@ -5,6 +5,7 @@ on:
       - closed
     branches:
       - master
+      - develop
 
 jobs:
   build:
