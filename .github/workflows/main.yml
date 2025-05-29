@@ -13,17 +13,26 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+
     steps:
     - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.merge_commit_sha }}
         fetch-depth: '0'
 
-    - name: Bump version and push tag
+    - name: Bump version for master
+      if: github.base_ref == 'master'
       uses: anothrNick/github-tag-action@1.73.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_BUMP: patch
+        PRERELEASE: false
+
+    - name: Bump version for develop (pre-release)
+      if: github.base_ref == 'develop'
+      uses: anothrNick/github-tag-action@1.73.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: patch
         PRERELEASE: true
-        # BRANCH_HISTORY: last
-
+        PRERELEASE_SUFFIX: pre
