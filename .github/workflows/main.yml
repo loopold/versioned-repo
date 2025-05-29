@@ -27,7 +27,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: patch
         PRERELEASE: false
-        WITH_V: true
 
     - name: Bump version for develop (pre-release)
       if: github.base_ref == 'develop'
@@ -37,5 +36,3 @@ jobs:
         DEFAULT_BUMP: patch
         PRERELEASE: true
         PRERELEASE_SUFFIX: pre
-        WITH_V: true
-        
