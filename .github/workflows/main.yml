@@ -6,8 +6,51 @@ on:
     branches:
       - master
       - develop
+  push: 
+    branches: [ feature/check ]
 
 jobs:
+  test:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    env:
+      ENVIRONMENT: dev
+
+    steps:
+      - name: Set lowercase and uppercase env vars
+        id: env-setup
+        run: |
+          # Lowercase (from input)
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
+
+          # Uppercase (for GitHub vars like DEV_SCRIPTS_PATH)
+          UPPER_ENV=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
+          echo "ENV_UPPER=$UPPER_ENV" >> $GITHUB_ENV
+
+          # Now manually map repo vars
+          case "$UPPER_ENV" in
+            DEV)
+              echo "SCRIPTS_PATH=${{ vars.DEV_SCRIPTS_PATH }}" >> $GITHUB_ENV
+              echo "SERVER_IP=${{ vars.DEV_SERVER_IP }}" >> $GITHUB_ENV
+              ;;
+            PROD)
+              echo "SCRIPTS_PATH=${{ vars.PROD_SCRIPTS_PATH }}" >> $GITHUB_ENV
+              echo "SERVER_IP=${{ vars.PROD_SERVER_IP }}" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "Unsupported environment: $UPPER_ENV"
+              exit 1
+              ;;
+          esac
+
+      - name: Show resolved variables
+        run: |
+          echo "ENVIRONMENT (lower): $ENVIRONMENT"
+          echo "ENVIRONMENT (upper): $ENV_UPPER"
+          echo "SCRIPTS_PATH: $SCRIPTS_PATH"
+          echo "SERVER_IP: $SERVER_IP"          
+
   build:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
