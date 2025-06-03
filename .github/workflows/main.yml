@@ -70,12 +70,13 @@ jobs:
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Check outputs
+      id: set-vars
       run: |
         echo "environment=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}" >> $GITHUB_OUTPUT
-        echo "environment z outputa: $environment"
+        echo "environment z outputa: ${{ steps.set-vars.outputs.environment }}"
         
         environment2=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}
-        echo "environment2 bez echo do outputa: $environment2"
+        echo "environment2 bez echo do outputa: $environment2"  ## It works
 
         echo "output: ${{ steps.vars.outputs.sha_short }}"
         echo "short: $sha_short"
