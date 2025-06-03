@@ -57,12 +57,22 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
-
+    outputs:
+      sha_short: ${{ steps.vars.outputs.sha_short }}
+      ecr_registry: ${{ steps.login-ecr.outputs.registry }}
+      
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.merge_commit_sha }}
-        fetch-depth: '0'
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Check outputs
+      run: |
+        echo "output: ${{ steps.vars.outputs.sha_short }}"
+        echo "short: $sha_short"
 
     - name: Bump version for master
       if: github.base_ref == 'master'
