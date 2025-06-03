@@ -74,7 +74,7 @@ jobs:
         echo "environment=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}" >> $GITHUB_OUTPUT
         echo "environment z outputa: $environment"
         
-        environment2=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}"
+        environment2=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}
         echo "environment2 bez echo do outputa: $environment2"
 
         echo "output: ${{ steps.vars.outputs.sha_short }}"
