@@ -25,7 +25,8 @@ jobs:
           echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
 
           # Uppercase (for GitHub vars like DEV_SCRIPTS_PATH)
-          UPPER_ENV=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
+          UPPER_ENV=$(echo "${{ env.ENVIRONMENT }}" | awk '{print toupper($0)}')
+          # UPPER_ENV=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
           echo "ENV_UPPER=$UPPER_ENV" >> $GITHUB_ENV
 
           # Now manually map repo vars
