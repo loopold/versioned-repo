@@ -8,7 +8,17 @@ on:
       - develop
   push: 
     branches: [ feature/check ]
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to (dev or prod)"
+        required: false
+        default: "dev"
+      image_tag:
+        description: "SHA tag or version of the image to deploy"
+        required: false
+        default: "latest"
+        
 jobs:
   test:
     runs-on: ubuntu-22.04
@@ -53,7 +63,7 @@ jobs:
           echo "SERVER_IP: $SERVER_IP"          
 
   build:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -70,7 +80,14 @@ jobs:
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Check outputs
+      id: set-vars
       run: |
+        echo "environment=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}" >> $GITHUB_OUTPUT
+        echo "environment z outputa: ${{ steps.set-vars.outputs.environment }}"
+        
+        environment2=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}
+        echo "environment2 bez echo do outputa: $environment2"  ## It works
+
         echo "output: ${{ steps.vars.outputs.sha_short }}"
         echo "short: $sha_short"
 
