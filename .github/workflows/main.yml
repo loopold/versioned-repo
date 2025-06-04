@@ -8,7 +8,17 @@ on:
       - develop
   push: 
     branches: [ feature/check ]
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to (dev or prod)"
+        required: false
+        default: "dev"
+      image_tag:
+        description: "SHA tag or version of the image to deploy"
+        required: false
+        default: "latest"
+        
 jobs:
   test:
     runs-on: ubuntu-22.04
